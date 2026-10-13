@@ -1,0 +1,16 @@
+README.md
+  h_1a6b0cc05bf029 31-39
+frontend/app.js
+  h_1a6b0cc05bf029 12,14,33-35,268-274,277-280,284-285,287-288,451-458,493,670,689-699
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "54e4ffa8f05b76ae359aa6b4d910a4c219506dfb",
+  "prompts": {},
+  "humans": {
+    "h_1a6b0cc05bf029": {
+      "author": "Anne Douwe Bouma <ad.bouma@247kooi.com>"
+    }
+  }
+}
