@@ -12,6 +12,9 @@ var COUNTDOWN_MS = 10000;
 var CONFIRM_CAPTURE_MS = 60000;
 var BACK = 412;
 var HOME = 773;
+// The TV's own launcher (the Home screen / app bar), so a remapped Home can
+// still be held to get back to it.
+var HOME_APP = 'com.webos.app.home';
 // Keys the app itself needs while listening for a *target* button; they pass
 // through the daemon and are never taken as the result (they are in the list).
 var NAV_KEYS = [412, 28, 272, 103, 108, 105, 106];
@@ -45,6 +48,7 @@ var ICON = {
   term: '<svg class="ic" viewBox="0 0 24 24"><path d="M4 17l6-5-6-5M12 19h8"/></svg>',
   none: '<svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>',
   hold: '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  home: '<svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h14V10"/></svg>',
   check: '<svg class="ic" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>',
   edit: '<svg class="ic" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
   power: '<svg class="ic" viewBox="0 0 24 24"><path d="M18.4 6.6a9 9 0 1 1-12.8 0M12 2v10"/></svg>',
@@ -284,6 +288,7 @@ function renderFlow() {
         (isHome ? '' : item('act-disable', 'act', 'disable', ICON.block, 'Do nothing', 'Disable the button completely')) +
         (isHome ? '' : item('act-replace', 'act', 'replace', ICON.swap, 'Act as another button', 'Play/Pause, Mute, Info, numbers, colours, or any button')) +
         item('act-launch', 'act', 'launch', ICON.play, 'Launch an app', 'Open any installed app') +
+        (isHome && forHold ? item('act-home', 'act', 'home', ICON.home, 'Open the stock launcher', 'The TV\'s own Home screen and app bar') : '') +
         (isHome ? '' : item('act-input', 'act', 'input', ICON.hdmi, 'Switch to an input', 'HDMI, Live TV and other inputs on this TV')) +
         (isHome ? '' : item('act-exec', 'act', 'exec', ICON.term, 'Run a command', 'Shell command as root, with presets')) +
         (forHold ? item('act-none', 'act', 'none', ICON.none, 'No hold action', 'Keep only the tap action')
@@ -560,6 +565,7 @@ function chooseAction(type) {
   var f = S.flow;
   if (type === 'none') { f.hold = null; f.step = 'summary'; setFocus('save'); return render(); }
   if (type === 'pass') { f.action = { type: 'pass' }; f.target = 'hold'; f.step = 'choose-action'; setFocus(null); return render(); }
+  if (type === 'home') return applyAction({ type: 'launch', app: HOME_APP, title: 'the stock launcher' });
   if (type === 'disable') return applyAction({ type: 'disable' });
   if (type === 'replace') { f.step = 'capture-target'; setFocus(null); render(); return startCountdown(); }
   if (type === 'input') {
